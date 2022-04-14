@@ -7,9 +7,9 @@ public class Checkers {
 
     public static int [][]  board = new int[8][8];
     public static int actingFigure = 1;
-    public static int actingKingFigure = actingFigure + 2;
+    public static int actingKingFigure;
 
-    public static void checkersBoard() {
+    public  void checkersBoard() {
 
 //        for (int j = 0; j <= 7; j++) {
 //            for (int i = 0; i <= 7; i++) {
@@ -43,10 +43,10 @@ public class Checkers {
             }
         }
 
-        Checkers.actionSelect();
+        actionSelect();
     }
 
-    public static void actionSelect(){
+    public void actionSelect(){
         Scanner console;
         console = new Scanner(System.in);
 
@@ -64,39 +64,44 @@ public class Checkers {
         }
 
         int select = console.nextInt();
-        Checkers.actionMove(select);
+        actionMove(select);
     }
 
-    public static void actionMove(int select) {
+    public void actionMove(int select) {
         Scanner console;
         while (true) {
 
             console = new Scanner(System.in);
 
             int move = console.nextInt();
+            actingKingFigure = actingFigure + 2;
 
             if (select / 10 > board.length - 1 || select % 10 > board.length - 1 ||
                     board[select / 10][select % 10] == 5 || board[select / 10][select % 10] == 0){
                 System.out.println("Error in select");
-                Checkers.actionSelect();
+                actionSelect();
             }
             else if (move / 10 > board.length - 1 || move % 10 > board.length - 1 || board[move / 10][move % 10] == 5){
                 System.out.println("Error in move");
-                Checkers.actionMove(select);
+                actionMove(select);
             }
             else if (board[select / 10][select % 10] == actingFigure ||
                     board[select / 10][select % 10] == actingKingFigure){
                 if (board[select / 10][select % 10] > 2){
-                    Checkers.figureO(select, move);
+                    figureO(select, move);
                 }
                 else {
-                    Checkers.One(select, move);
+                    One(select, move);
                 }
+            }
+            else {
+                System.out.println(" Error target ");
+                actionSelect();
             }
         }
     }
 
-    public static void One(int select, int move){
+    public void One(int select, int move){
 
         int i = select / 10;
         int j = select % 10;
@@ -110,7 +115,7 @@ public class Checkers {
                 actingFigure += 1;
             }
             else actingFigure -= 1;
-            Checkers.actionSelect();
+            actionSelect();
         }
         else if ((move == (i - 1) * 10 + (j + 1) || move == (i + 1) * 10 + (j + 1)) &&
                 board[move / 10][move % 10] == 0){
@@ -121,86 +126,86 @@ public class Checkers {
                 actingFigure += 1;
             }
             else actingFigure -= 1;
-            Checkers.actionSelect();
-//            Переработка
+            actionSelect();
         }
         else if((move == (i - 2) * 10 + (j + 2) || move == (i + 2) * 10 + (j + 2) ||
                 move == (i - 2) * 10 + (j - 2) || move == (i + 2) * 10 + (j - 2)) &&
                 (board[move / 10][move % 10] == 0)){
-            if (select - move == -18 && ((board[(move - 9) / 10][(move - 9) % 10] != actingFigure ||
+            if (move - select == -18 && ((board[(move - 9) / 10][(move - 9) % 10] != actingFigure ||
                     board[(move - 9) / 10][(move - 9) % 10] != actingKingFigure) &&
                     board[(move - 9) / 10][(move - 9) % 10] != 0)){
                 board[(move - 9) / 10][(move - 9) % 10] = 0;
                 board[move / 10][move % 10] = board[select / 10][select % 10];
                 board[select / 10][select % 10] = 0;
-                Checkers.nextMove(move);
+                nextMove(move);
             }
-            else if (select - move == -22 && (board[(move - 11) / 10][(move - 11) % 10] != actingFigure ||
+            else if (move - select == -22 && (board[(move - 11) / 10][(move - 11) % 10] != actingFigure ||
                     board[(move - 11) / 10][(move - 11) % 10] != actingKingFigure) &&
                     board[(move - 11) / 10][(move - 11) % 10] != 0){
                 board[(move - 11) / 10][(move - 11) % 10] = 0;
                 board[move / 10][move % 10] = board[select / 10][select % 10];
                 board[select / 10][select % 10] = 0;
-                Checkers.nextMove(move);
+                nextMove(move);
             }
-            else if (select - move == 22 && (board[(move + 11) / 10][(move + 11) % 10] != actingFigure ||
+            else if (move - select == 22 && (board[(move + 11) / 10][(move + 11) % 10] != actingFigure ||
                     board[(move + 11) / 10][(move + 11) % 10] != actingKingFigure) &&
                     board[(move + 11) / 10][(move + 11) % 10] != 0){
                 board[(move + 11) / 10][(move + 11) % 10] = 0;
                 board[move / 10][move % 10] = board[select / 10][select % 10];
                 board[select / 10][select % 10] = 0;
-                Checkers.nextMove(move);
+                nextMove(move);
             }
-            else if (select - move == 18 && (board[(move + 9) / 10][(move + 9) % 10] != actingFigure ||
+            else if (move - select == 18 && (board[(move + 9) / 10][(move + 9) % 10] != actingFigure ||
                     board[(move + 9) / 10][(move + 9) % 10] != actingKingFigure) &&
                     board[(move + 9) / 10][(move + 9) % 10] != 0){
                 board[(move + 9) / 10][(move + 9) % 10] = 0;
                 board[move / 10][move % 10] = board[select / 10][select % 10];
                 board[select / 10][select % 10] = 0;
-                Checkers.nextMove(move);
+                nextMove(move);
             }
             else {
                 System.out.println("FF");
             }
-//            Дальше норм
+        }
+        else {
+            System.out.println(" Final Error ");
+            actionSelect();
         }
     }
-    public static void figureO (int select, int move){
-        if (((select - move) % 11 == 0 || (select - move) % 9 == 0) && board[move / 10][move % 10] == 0){
+    public void figureO (int select, int move){
+        if (((move - select) % 11 == 0 || (move - select) % 9 == 0) && board[move / 10][move % 10] == 0){
 
-            int buffMove = move;
+            int buffSelect = select;
             int buffSM;
             int buffShitAgan = board[select / 10][select % 10];
             boolean escalate = true;
             boolean target = false;
 
-            if ((select - move) % 11 == 0 && select - move < 0){
+            if ((move - select) % 11 == 0 && move - select < 0){
                 buffSM = -11;
             }
-            else if ((select - move) % 11 == 0 && select - move > 0){
+            else if ((move - select) % 11 == 0 && move - select > 0){
                 buffSM = 11;
             }
-            else if ((select - move) % 9 == 0 && select - move > 0){
+            else if ((move - select) % 9 == 0 && move - select > 0){
                 buffSM = 9;
             }
             else {
                 buffSM = -9;
             }
 
-            while (buffMove != select && escalate){
-                if (board[buffMove / 10][buffMove % 10] == 0){
-                    buffMove = buffMove + buffSM;
+            while (buffSelect != move && escalate){
+                if (board[(buffSelect + buffSM) / 10][(buffSelect + buffSM) % 10] == 0){
+                    buffSelect = buffSelect + buffSM;
                 }
-                else if (board[buffMove / 10][buffMove % 10] == actingFigure ||
-                        board[buffMove / 10][buffMove % 10] == actingKingFigure){
+                else if (board[(buffSelect + buffSM) / 10][(buffSelect + buffSM) % 10] == actingFigure ||
+                        board[(buffSelect + buffSM) / 10][(buffSelect + buffSM) % 10] == actingKingFigure){
                     escalate = false;
                 }
-                else if (board[buffMove / 10][buffMove % 10] != actingFigure ||
-                        board[buffMove / 10][buffMove % 10] != actingKingFigure){
-                    buffMove = buffMove + buffSM;
-                    if (board[buffMove / 10][buffMove % 10] == 0){
-                        board[(buffMove - buffSM) / 10][(buffMove - buffSM) % 10] = 0;
-                        board[buffMove / 10][buffMove % 10] = board[select / 10][select % 10];
+                else if (board[(buffSelect + buffSM) / 10][(buffSelect + buffSM) % 10] != actingFigure ||
+                        board[(buffSelect + buffSM) / 10][(buffSelect + buffSM) % 10] != actingKingFigure){
+                    buffSelect = buffSelect + (2 * buffSM);
+                    if (board[buffSelect / 10][buffSelect % 10] == 0){
                         board[select / 10][select % 10] = 0;
                         target = true;
                     }
@@ -210,56 +215,78 @@ public class Checkers {
                 }
             }
             if (escalate){
+                buffSelect = select;
+                while (buffSelect != move){
+                    if ((board[(buffSelect + buffSM) / 10][(buffSelect + buffSM) % 10] != actingFigure ||
+                            board[(buffSelect + buffSM) / 10][(buffSelect + buffSM) % 10] != actingKingFigure) &&
+                            board[(buffSelect + buffSM) / 10][(buffSelect + buffSM) % 10] != 0) {
+                        buffSelect = buffSelect + (2 * buffSM);
+                        if (board[buffSelect / 10][buffSelect % 10] == 0) {
+                            board[(buffSelect - buffSM) / 10][(buffSelect - buffSM) % 10] = 0;
+                            board[buffSelect / 10][buffSelect % 10] = board[select / 10][select % 10];
+                            board[select / 10][select % 10] = 0;
+                            target = true;
+                        }
+                    }
+                    else {
+                        buffSelect = buffSelect + buffSM;
+                    }
+                }
                 board[move / 10][move % 10] = buffShitAgan;
                 board[select / 10][select % 10] = 0;
                 if (target){
-                    Checkers.nextMove(move);
+                    nextMove(move);
                 }
                 else if (actingFigure == 1){
                     actingFigure += 1;
-                    Checkers.actionSelect();
+                    actionSelect();
                 }
                 else {
                     actingFigure -= 1;
-                    Checkers.actionSelect();
+                    actionSelect();
                 }
             }
-            else System.out.println("Error in KF");
+            else {
+                System.out.println("Error in KF");
+                actionSelect();
+            }
+        }
+        else {
+            System.out.println(" Error in SK or MK");
         }
     }
-    public static void nextMove(int move){
-        if (move / 10 != 7 || move % 10 != 0){
-            if (board[(move + 9) / 10][(move + 9) % 10] != actingFigure &&
-                    board[(move + 9) / 10][(move + 9) % 10] != 0 &&
-                    board[(move + 18) / 10][(move + 18) % 10] != actingFigure &&
-                    board[(move + 18) / 10][(move + 18) % 10] != 0){
-
-            }
+    public void nextMove(int move){
+        if (move / 10 < 6 && move % 10 > 1 && (board[(move + 9) / 10][(move + 9) % 10] != actingFigure &&
+                board[(move + 9) / 10][(move + 9) % 10] != 0 &&
+                board[(move + 9) / 10][(move + 9) % 10] != actingKingFigure &&
+                board[(move + 18) / 10][(move + 18) % 10] == 0)){
+            actionMove(move);
         }
-        else if (move / 10 != 0 || move % 10 != 0){
-            if (board[(move - 11) / 10][(move - 11) % 10] != actingFigure &&
-                    board[(move - 11) / 10][(move - 11) % 10] != 0 &&
-                    board[(move - 22) / 10][(move - 22) % 10] != actingFigure &&
-                    board[(move - 22) / 10][(move - 22) % 10] != 0){
-
-            }
+        else if (move / 10 > 1 && move % 10 > 1 && (board[(move - 11) / 10][(move - 11) % 10] != actingFigure &&
+                board[(move - 11) / 10][(move - 11) % 10] != 0 &&
+                board[(move - 11) / 10][(move - 11) % 10] != actingKingFigure &&
+                board[(move - 22) / 10][(move - 22) % 10] == 0)){
+            actionMove(move);
         }
-        else if (move / 10 != 7 || move % 10 != 7){
-            if (board[(move + 11) / 10][(move + 11) % 10] != actingFigure &&
-                    board[(move + 11) / 10][(move + 11) % 10] != 0 &&
-                    board[(move + 22) / 10][(move + 22) % 10] != actingFigure &&
-                    board[(move + 22) / 10][(move + 22) % 10] != 0){
-
-            }
+        else if (move / 10 < 6 && move % 10 < 6 && (board[(move + 11) / 10][(move + 11) % 10] != actingFigure &&
+                board[(move + 11) / 10][(move + 11) % 10] != 0 &&
+                board[(move + 11) / 10][(move + 11) % 10] != actingKingFigure &&
+                board[(move + 22) / 10][(move + 22) % 10] == 0)){
+            actionMove(move);
         }
-        else if (move / 10 != 0 || move % 10 != 7){
-            if (board[(move - 9) / 10][(move - 9) % 10] != actingFigure &&
-                    board[(move - 9) / 10][(move - 9) % 10] != 0 &&
-                    board[(move - 18) / 10][(move - 18) % 10] != actingFigure &&
-                    board[(move - 18) / 10][(move - 18) % 10] != 0){
-
-            }
+        else if (move / 10 > 1 && move % 10 < 6 && (board[(move - 9) / 10][(move - 9) % 10] != actingFigure &&
+                board[(move - 9) / 10][(move - 9) % 10] != 0 &&
+                board[(move - 9) / 10][(move - 9) % 10] != actingKingFigure &&
+                board[(move - 18) / 10][(move - 18) % 10] == 0)){
+            actionMove(move);
         }
-        else Checkers.actionSelect();
+        else if (actingFigure == 1){
+            actingFigure += 1;
+            actionSelect();
+        }
+        else {
+            actingFigure -= 1;
+            actionSelect();
+        }
     }
 }
