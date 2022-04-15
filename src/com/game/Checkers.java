@@ -235,7 +235,8 @@ public class Checkers {
                 board[move / 10][move % 10] = buffShitAgan;
                 board[select / 10][select % 10] = 0;
                 if (target){
-                    nextMove(move);
+                    nextMoveKing(move);
+//                    nextMove(move);
                 }
                 else if (actingFigure == 1){
                     actingFigure += 1;
@@ -287,6 +288,88 @@ public class Checkers {
         else {
             actingFigure -= 1;
             actionSelect();
+        }
+    }
+//    В разработке
+
+    public void nextMoveKing(int move){
+        int buff = move;
+        boolean escalate = false;
+        boolean target = false;
+        while (buff / 10 < 6 && buff % 10 > 1 && !escalate){
+            if (board[(buff + 9) / 10][(buff + 9) % 10] != actingFigure &&
+                    board[(buff + 9) / 10][(buff + 9) % 10] != 0 &&
+                    board[(buff + 9) / 10][(buff + 9) % 10] != actingKingFigure &&
+                    board[(buff + 18) / 10][(buff + 18) % 10] == 0){
+                target = true;
+                escalate = true;
+            }
+            else if (board[(buff + 9) / 10][(buff + 9) % 10] == 0){
+                buff = buff + 9;
+            }
+            else escalate = true;
+
+        }
+        buff = move;
+        escalate = false;
+        while (buff / 10 > 1 && buff % 10 > 1 && !escalate){
+            if (board[(buff - 11) / 10][(buff - 11) % 10] != actingFigure &&
+                    board[(buff - 11) / 10][(buff - 11) % 10] != 0 &&
+                    board[(buff - 11) / 10][(buff - 11) % 10] != actingKingFigure &&
+                    board[(buff - 22) / 10][(buff - 22) % 10] == 0){
+                target = true;
+                escalate = true;
+            }
+            else if (board[(buff - 11) / 10][(buff - 11) % 10] == 0){
+                buff = buff - 11;
+            }
+            else escalate = true;
+
+        }
+        buff = move;
+        escalate = false;
+        while (buff / 10 < 6 && buff % 10 < 6 && !escalate){
+            if (board[(buff + 11) / 10][(buff + 11) % 10] != actingFigure &&
+                    board[(buff + 11) / 10][(buff + 11) % 10] != 0 &&
+                    board[(buff + 11) / 10][(buff + 11) % 10] != actingKingFigure &&
+                    board[(buff + 22) / 10][(buff + 22) % 10] == 0){
+                target = true;
+                escalate = true;
+            }
+            else if (board[(buff + 11) / 10][(buff + 11) % 10] == 0){
+                buff = buff + 11;
+            }
+            else escalate = true;
+
+        }
+        buff = move;
+        escalate = false;
+        while (buff / 10 > 1 && buff % 10 < 6 && !escalate){
+            if (board[(buff - 9) / 10][(buff - 9) % 10] != actingFigure &&
+                    board[(buff - 9) / 10][(buff - 9) % 10] != 0 &&
+                    board[(buff - 9) / 10][(buff - 9) % 10] != actingKingFigure &&
+                    board[(buff - 18) / 10][(buff - 18) % 10] == 0){
+                target = true;
+                escalate = true;
+            }
+            else if (board[(buff - 9) / 10][(buff - 9) % 10] == 0){
+                buff = buff - 9;
+            }
+            else escalate = true;
+
+        }
+        if(target){
+            actionMove(move);
+        }
+        else {
+            if (actingFigure == 1){
+                actingFigure += 1;
+                actionSelect();
+            }
+            else {
+                actingFigure -= 1;
+                actionSelect();
+            }
         }
     }
 }
