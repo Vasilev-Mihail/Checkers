@@ -217,7 +217,7 @@ public class Checkers {
             }
             if (flag && !target){
                 escalate = false;
-                actionMove(select, flag);
+                nextMoveKing(select, flag);
             }
             if (escalate){
                 buffSelect = select;
