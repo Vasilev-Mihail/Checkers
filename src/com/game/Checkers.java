@@ -43,10 +43,10 @@ public class Checkers {
             }
         }
 
-        actionSelect();
+        arbitrator();
     }
 
-    public void actionSelect(){
+    public void actionSelect(boolean flag){
         Scanner console;
         console = new Scanner(System.in);
 
@@ -64,7 +64,6 @@ public class Checkers {
         }
 
         int select = console.nextInt();
-        boolean flag = false;
         actionMove(select, flag);
     }
 
@@ -80,7 +79,7 @@ public class Checkers {
             if (select / 10 > board.length - 1 || select % 10 > board.length - 1 ||
                     board[select / 10][select % 10] == 5 || board[select / 10][select % 10] == 0){
                 System.out.println("Error in select");
-                actionSelect();
+                arbitrator();
             }
             else if (move / 10 > board.length - 1 || move % 10 > board.length - 1 || board[move / 10][move % 10] == 5){
                 System.out.println("Error in move");
@@ -97,7 +96,7 @@ public class Checkers {
             }
             else {
                 System.out.println(" Error target ");
-                actionSelect();
+                arbitrator();
             }
         }
     }
@@ -116,7 +115,7 @@ public class Checkers {
                 actingFigure += 1;
             }
             else actingFigure -= 1;
-            actionSelect();
+            arbitrator();
         }
         else if ((move == (i - 1) * 10 + (j + 1) || move == (i + 1) * 10 + (j + 1)) &&
                 board[move / 10][move % 10] == 0 && !flag){
@@ -127,7 +126,7 @@ public class Checkers {
                 actingFigure += 1;
             }
             else actingFigure -= 1;
-            actionSelect();
+            arbitrator();
         }
         else if((move == (i - 2) * 10 + (j + 2) || move == (i + 2) * 10 + (j + 2) ||
                 move == (i - 2) * 10 + (j - 2) || move == (i + 2) * 10 + (j - 2)) &&
@@ -138,7 +137,7 @@ public class Checkers {
                 board[(move - 9) / 10][(move - 9) % 10] = 0;
                 board[move / 10][move % 10] = board[select / 10][select % 10];
                 board[select / 10][select % 10] = 0;
-                nextMove(move);
+                nextMove(move, false);
             }
             else if (move - select == -22 && (board[(move - 11) / 10][(move - 11) % 10] != actingFigure ||
                     board[(move - 11) / 10][(move - 11) % 10] != actingKingFigure) &&
@@ -146,7 +145,7 @@ public class Checkers {
                 board[(move - 11) / 10][(move - 11) % 10] = 0;
                 board[move / 10][move % 10] = board[select / 10][select % 10];
                 board[select / 10][select % 10] = 0;
-                nextMove(move);
+                nextMove(move, false);
             }
             else if (move - select == 22 && (board[(move + 11) / 10][(move + 11) % 10] != actingFigure ||
                     board[(move + 11) / 10][(move + 11) % 10] != actingKingFigure) &&
@@ -154,7 +153,7 @@ public class Checkers {
                 board[(move + 11) / 10][(move + 11) % 10] = 0;
                 board[move / 10][move % 10] = board[select / 10][select % 10];
                 board[select / 10][select % 10] = 0;
-                nextMove(move);
+                nextMove(move, false);
             }
             else if (move - select == 18 && (board[(move + 9) / 10][(move + 9) % 10] != actingFigure ||
                     board[(move + 9) / 10][(move + 9) % 10] != actingKingFigure) &&
@@ -162,7 +161,7 @@ public class Checkers {
                 board[(move + 9) / 10][(move + 9) % 10] = 0;
                 board[move / 10][move % 10] = board[select / 10][select % 10];
                 board[select / 10][select % 10] = 0;
-                nextMove(move);
+                nextMove(move, false);
             }
             else {
                 System.out.println("FF");
@@ -170,9 +169,8 @@ public class Checkers {
         }
         else {
             System.out.println(" Final Error ");
-//            actionSelect();
+//            arbitrator();
             actionMove(select, flag);
-//                Ж
         }
     }
     public void figureO (int select, int move, boolean flag){
@@ -242,64 +240,70 @@ public class Checkers {
                 board[move / 10][move % 10] = buffShitAgan;
                 board[select / 10][select % 10] = 0;
                 if (target){
-                    nextMoveKing(move);
+                    nextMoveKing(move, false);
                 }
                 else if (actingFigure == 1){
                     actingFigure += 1;
-                    actionSelect();
+                    arbitrator();
                 }
                 else {
                     actingFigure -= 1;
-                    actionSelect();
+                    arbitrator();
                 }
             }
             else {
                 System.out.println("Error in KF");
-                actionSelect();
-//                Ж
+                arbitrator();
             }
         }
         else {
             System.out.println(" Error in SK or MK");
         }
     }
-    public void nextMove(int move){
+    public void nextMove(int move, boolean check){
+
+        boolean indicator = false;
         if (move / 10 < 6 && move % 10 > 1 && (board[(move + 9) / 10][(move + 9) % 10] != actingFigure &&
                 board[(move + 9) / 10][(move + 9) % 10] != 0 &&
                 board[(move + 9) / 10][(move + 9) % 10] != actingKingFigure &&
                 board[(move + 18) / 10][(move + 18) % 10] == 0)){
-            actionMove(move, true);
+            indicator = true;
         }
         else if (move / 10 > 1 && move % 10 > 1 && (board[(move - 11) / 10][(move - 11) % 10] != actingFigure &&
                 board[(move - 11) / 10][(move - 11) % 10] != 0 &&
                 board[(move - 11) / 10][(move - 11) % 10] != actingKingFigure &&
                 board[(move - 22) / 10][(move - 22) % 10] == 0)){
-            actionMove(move, true);
+            indicator = true;
         }
         else if (move / 10 < 6 && move % 10 < 6 && (board[(move + 11) / 10][(move + 11) % 10] != actingFigure &&
                 board[(move + 11) / 10][(move + 11) % 10] != 0 &&
                 board[(move + 11) / 10][(move + 11) % 10] != actingKingFigure &&
                 board[(move + 22) / 10][(move + 22) % 10] == 0)){
-            actionMove(move, true);
+            indicator = true;
         }
         else if (move / 10 > 1 && move % 10 < 6 && (board[(move - 9) / 10][(move - 9) % 10] != actingFigure &&
                 board[(move - 9) / 10][(move - 9) % 10] != 0 &&
                 board[(move - 9) / 10][(move - 9) % 10] != actingKingFigure &&
                 board[(move - 18) / 10][(move - 18) % 10] == 0)){
+            indicator = true;
+        }
+        if (indicator && check){
+            actionSelect(true);
+        }
+        else if (indicator && !check){
             actionMove(move, true);
         }
-        else if (actingFigure == 1){
+        else if (actingFigure == 1 && !check){
             actingFigure += 1;
-            actionSelect();
+            arbitrator();
         }
-        else {
+        else if (!check){
             actingFigure -= 1;
-            actionSelect();
+            arbitrator();
         }
     }
-//    В разработке
 
-    public void nextMoveKing(int move){
+    public void nextMoveKing(int move, boolean check){
         int buff = move;
         boolean escalate = false;
         boolean target = false;
@@ -366,18 +370,34 @@ public class Checkers {
             else escalate = true;
 
         }
-        if(target){
+        if(target && !check){
             actionMove(move, true);
         }
+        else if (target && check){
+            actionSelect(true);
+        }
         else {
-            if (actingFigure == 1){
+            if (actingFigure == 1 && !check){
                 actingFigure += 1;
-                actionSelect();
+                arbitrator();
             }
-            else {
+            else if(!check){
                 actingFigure -= 1;
-                actionSelect();
+                arbitrator();
             }
         }
+    }
+    public void arbitrator(){
+        for (int j = 0; j <= 7; j++) {
+            for (int i = 0; i <= 7; i++) {
+                if (board[i][j] == actingFigure){
+                    nextMove(((i * 10) + j), true);
+                }
+                else if (board[i][j] == actingKingFigure){
+                    nextMoveKing(((i * 10) + j), true);
+                }
+            }
+        }
+        actionSelect(false);
     }
 }
