@@ -207,6 +207,7 @@ public class Checkers {
                         board[(buffSelect + buffSM) / 10][(buffSelect + buffSM) % 10] != actingKingFigure){
                     buffSelect = buffSelect + (2 * buffSM);
                     if (board[buffSelect / 10][buffSelect % 10] == 0){
+//                        Место внедрения.
                         board[select / 10][select % 10] = 0;
                         target = true;
                     }
@@ -258,6 +259,7 @@ public class Checkers {
         }
         else {
             System.out.println(" Error in SK or MK");
+            arbitrator();
         }
     }
     public void nextMove(int move, boolean check){
@@ -375,6 +377,7 @@ public class Checkers {
         }
         else if (target && check){
             actionSelect(true);
+//            Место внедрения.
         }
         else {
             if (actingFigure == 1 && !check){
