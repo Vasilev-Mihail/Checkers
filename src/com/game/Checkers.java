@@ -68,6 +68,7 @@ public class Checkers {
     }
 
     public void actionMove(int select, boolean flag) {
+        System.out.println(flag);
         Scanner console;
         while (true) {
 
@@ -125,7 +126,10 @@ public class Checkers {
             if (actingFigure == 1){
                 actingFigure += 1;
             }
-            else actingFigure -= 1;
+            else {
+                actingFigure -= 1;
+            }
+            actingKingFigure = actingFigure + 2;
             arbitrator();
         }
         else if((move == (i - 2) * 10 + (j + 2) || move == (i + 2) * 10 + (j + 2) ||
@@ -218,7 +222,6 @@ public class Checkers {
             }
             if (flag && !target){
                 escalate = false;
-                nextMoveKing(select, flag);
             }
             if (escalate){
                 buffSelect = select;
@@ -245,10 +248,12 @@ public class Checkers {
                 }
                 else if (actingFigure == 1){
                     actingFigure += 1;
+                    actingKingFigure = actingFigure + 2;
                     arbitrator();
                 }
                 else {
                     actingFigure -= 1;
+                    actingKingFigure = actingFigure + 2;
                     arbitrator();
                 }
             }
@@ -292,20 +297,23 @@ public class Checkers {
         if (indicator && check){
             actionSelect(true);
         }
-        else if (indicator && !check){
+        else if (indicator){
             actionMove(move, true);
         }
         else if (actingFigure == 1 && !check){
             actingFigure += 1;
+            actingKingFigure = actingFigure + 2;
             arbitrator();
         }
         else if (!check){
             actingFigure -= 1;
+            actingKingFigure = actingFigure + 2;
             arbitrator();
         }
     }
 
     public void nextMoveKing(int move, boolean check){
+        System.out.println(" Проверка " + actingFigure);
         int buff = move;
         boolean escalate = false;
         boolean target = false;
@@ -375,22 +383,23 @@ public class Checkers {
         if(target && !check){
             actionMove(move, true);
         }
-        else if (target && check){
+        else if (target){
             actionSelect(true);
 //            Место внедрения.
         }
-        else {
-            if (actingFigure == 1 && !check){
+        else if (actingFigure == 1 && !check){
                 actingFigure += 1;
+                actingKingFigure = actingFigure + 2;
                 arbitrator();
             }
-            else if(!check){
-                actingFigure -= 1;
-                arbitrator();
-            }
+        else if(!check){
+            actingFigure -= 1;
+            actingKingFigure = actingFigure + 2;
+            arbitrator();
         }
     }
     public void arbitrator(){
+        System.out.println(" Актив " + actingFigure);
         for (int j = 0; j <= 7; j++) {
             for (int i = 0; i <= 7; i++) {
                 if (board[i][j] == actingFigure){
