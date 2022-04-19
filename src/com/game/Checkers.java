@@ -180,6 +180,7 @@ public class Checkers {
     public void figureO (int select, int move, boolean flag){
         if (((move - select) % 11 == 0 || (move - select) % 9 == 0) && board[move / 10][move % 10] == 0){
 
+            int targetBuff = 88;
             int buffSelect = select;
             int buffSM;
             int buffShitAgan = board[select / 10][select % 10];
@@ -235,6 +236,7 @@ public class Checkers {
                             board[buffSelect / 10][buffSelect % 10] = board[select / 10][select % 10];
                             board[select / 10][select % 10] = 0;
                             target = true;
+                            targetBuff = buffSelect - buffSM;
                         }
                     }
                     else {
@@ -244,7 +246,7 @@ public class Checkers {
                 board[move / 10][move % 10] = buffShitAgan;
                 board[select / 10][select % 10] = 0;
                 if (target){
-                    nextMoveKing(move, false);
+                    nextMoveKing(move, false, targetBuff, false);
                 }
                 else if (actingFigure == 1){
                     actingFigure += 1;
@@ -312,8 +314,9 @@ public class Checkers {
         }
     }
 
-    public void nextMoveKing(int move, boolean check){
+    public void nextMoveKing(int move, boolean check, int targetBuff, boolean kingRule){
         System.out.println(" Проверка " + actingFigure);
+        System.out.println(" Move " + move);
         int buff = move;
         boolean escalate = false;
         boolean target = false;
@@ -380,22 +383,20 @@ public class Checkers {
             else escalate = true;
 
         }
-        if(target && !check){
+        if(target && !check && !kingRule){
             actionMove(move, true);
         }
-        else if (target){
+        else if (!target && !check && !kingRule){
+            kingRules(targetBuff, move);
+        }
+        else if (target && !kingRule){
             actionSelect(true);
 //            Место внедрения.
         }
-        else if (actingFigure == 1 && !check){
-                actingFigure += 1;
-                actingKingFigure = actingFigure + 2;
-                arbitrator();
-            }
-        else if(!check){
-            actingFigure -= 1;
-            actingKingFigure = actingFigure + 2;
-            arbitrator();
+        else if (target){
+            System.out.println(" test control");
+            board[move / 10][move % 10] = actingFigure + 2;
+            actionMove(move, true);
         }
     }
     public void arbitrator(){
@@ -406,10 +407,56 @@ public class Checkers {
                     nextMove(((i * 10) + j), true);
                 }
                 else if (board[i][j] == actingKingFigure){
-                    nextMoveKing(((i * 10) + j), true);
+                    nextMoveKing(((i * 10) + j), true, 88, false);
                 }
             }
         }
         actionSelect(false);
+    }
+
+    public void kingRules(int targetBuff, int move){
+
+        System.out.println(" rule control " + targetBuff + " " + move);
+        int buffMove = move;
+        int buffSM;
+
+        board[move / 10][move % 10] = 0;
+
+        if ((move - targetBuff) % 11 == 0 && move - targetBuff < 0){
+            buffSM = -11;
+        }
+        else if ((move - targetBuff) % 11 == 0 && move - targetBuff > 0){
+            buffSM = 11;
+        }
+        else if ((move - targetBuff) % 9 == 0 && move - targetBuff > 0){
+            buffSM = 9;
+        }
+        else {
+            buffSM = -9;
+        }
+        if (targetBuff / 10 > board.length - 1 || targetBuff % 10 > board.length - 1){
+            System.out.println(" targetBuff error");
+        }
+        else{
+            while (buffMove != targetBuff + buffSM && board[(buffMove - buffSM) / 10][(buffMove - buffSM) % 10] == 0){
+                buffMove = buffMove - buffSM;
+                nextMoveKing(buffMove, true, targetBuff, true);
+                System.out.println(" buffMove " + buffMove);
+            }
+            while (buffMove <= board.length - 1 && board[(buffMove + buffSM) / 10][(buffMove + buffSM) % 10] == 0){
+                buffMove = buffMove + buffSM;
+                nextMoveKing(buffMove, true, targetBuff, true);
+                System.out.println(" buffMove " + buffMove);
+            }
+        }
+        board[move / 10][move % 10] = actingFigure + 2;
+        if (actingFigure == 1){
+                actingFigure += 1;
+        }
+        else{
+            actingFigure -= 1;
+        }
+        actingKingFigure = actingFigure + 2;
+        arbitrator();
     }
 }
