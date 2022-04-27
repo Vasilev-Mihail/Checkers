@@ -30,7 +30,8 @@ public class Checkers {
             for (int i = 0; i <= 7; i++) {
                 if ((i + j + 1) % 2 != 0) {
                     board[i][j] = 5;
-                } else {
+                }
+                else {
                     if (j == 2) {
                         board[i][j] = 4;
                     } else if (j == 5) {
@@ -41,7 +42,6 @@ public class Checkers {
                 }
             }
         }
-
         arbitrator();
     }
 
@@ -67,7 +67,6 @@ public class Checkers {
     }
 
     public void actionMove(int select, boolean flag) {
-        System.out.println(flag);
         Scanner console;
 
         console = new Scanner(System.in);
@@ -87,10 +86,10 @@ public class Checkers {
         else if (board[select / 10][select % 10] == actingFigure ||
                 board[select / 10][select % 10] == actingFigure + 2){
             if (board[select / 10][select % 10] > 2){
-                figureO(select, move, flag);
+                king(select, move, flag);
             }
             else {
-                One(select, move, flag);
+                checkersFigure(select, move, flag);
             }
         }
         else {
@@ -99,14 +98,13 @@ public class Checkers {
         }
     }
 
-    public void One(int select, int move, boolean flag){
+    public void checkersFigure(int select, int move, boolean flag){
 
         int i = select / 10;
         int j = select % 10;
 
         if ((move == (i - 1) * 10 + (j - 1) || move == (i + 1) * 10 + (j - 1)) &&
                 board[move / 10][move % 10] == 0 && !flag){
-            System.out.println("Всё очень плохо №1");
             board[move / 10][move % 10] = board[select / 10][select % 10];
             board[select / 10][select % 10] = 0;
             if (actingFigure == 1){
@@ -117,7 +115,6 @@ public class Checkers {
         }
         else if ((move == (i - 1) * 10 + (j + 1) || move == (i + 1) * 10 + (j + 1)) &&
                 board[move / 10][move % 10] == 0 && !flag){
-            System.out.println("Всё очень плохо №2");
             board[move / 10][move % 10] = board[select / 10][select % 10];
             board[select / 10][select % 10] = 0;
             if (actingFigure == 1){
@@ -170,11 +167,10 @@ public class Checkers {
         }
         else {
             System.out.println(" Final Error ");
-//            arbitrator();
             actionMove(select, flag);
         }
     }
-    public void figureO (int select, int move, boolean flag){
+    public void king (int select, int move, boolean flag){
         if (((move - select) % 11 == 0 || (move - select) % 9 == 0) && board[move / 10][move % 10] == 0){
 
             int targetBuff = 88;
@@ -209,7 +205,6 @@ public class Checkers {
                         board[(buffSelect + buffSM) / 10][(buffSelect + buffSM) % 10] != actingFigure + 2){
                     buffSelect = buffSelect + (2 * buffSM);
                     if (board[buffSelect / 10][buffSelect % 10] == 0){
-//                        Место внедрения.
                         board[select / 10][select % 10] = 0;
                         target = true;
                     }
@@ -312,8 +307,6 @@ public class Checkers {
     }
 
     public void nextMoveKing(int move, boolean check, int targetBuff, boolean kingRule){
-        System.out.println(" Проверка " + actingFigure);
-        System.out.println(" Move " + move);
         int buff = move;
         boolean escalate = false;
         boolean target = false;
@@ -388,16 +381,13 @@ public class Checkers {
         }
         else if (target && !kingRule){
             actionSelect(true);
-//            Место внедрения.
         }
         else if (target){
-            System.out.println(" test control");
             board[move / 10][move % 10] = actingFigure + 2;
             actionMove(move, true);
         }
     }
     public void arbitrator(){
-        System.out.println(" Актив " + actingFigure);
         for (int j = 0; j <= 7; j++) {
             for (int i = 0; i <= 7; i++) {
                 if (board[i][j] == actingFigure){
@@ -413,7 +403,6 @@ public class Checkers {
 
     public void kingRules(int targetBuff, int move){
 
-        System.out.println(" rule control " + targetBuff + " " + move);
         int buffMove = move;
         int buffSM;
 
@@ -431,24 +420,17 @@ public class Checkers {
         else {
             buffSM = -9;
         }
-        if (targetBuff / 10 > board.length - 1 || targetBuff % 10 > board.length - 1){
-            System.out.println(" targetBuff error");
+
+        while (buffMove != targetBuff + buffSM && board[(buffMove - buffSM) / 10][(buffMove - buffSM) % 10] == 0){
+            buffMove = buffMove - buffSM;
+            nextMoveKing(buffMove, true, targetBuff, true);
         }
-        else{
-            while (buffMove != targetBuff + buffSM && board[(buffMove - buffSM) / 10][(buffMove - buffSM) % 10] == 0){
-                buffMove = buffMove - buffSM;
-                nextMoveKing(buffMove, true, targetBuff, true);
-                System.out.println(" buffMove " + buffMove);
-            }
-            buffMove = move;
-            System.out.println(" buffMove " + buffMove + buffSM);
-            while (buffMove + buffSM >= 0 && (buffMove + buffSM) / 10 <= board.length - 1 &&
-                    (buffMove + buffSM) % 10 <= board.length - 1 &&
-                    board[(buffMove + buffSM) / 10][(buffMove + buffSM) % 10] == 0){
-                buffMove = buffMove + buffSM;
-                nextMoveKing(buffMove, true, targetBuff, true);
-                System.out.println(" buffMove " + buffMove);
-            }
+        buffMove = move;
+        while (buffMove + buffSM >= 0 && (buffMove + buffSM) / 10 <= board.length - 1 &&
+                (buffMove + buffSM) % 10 <= board.length - 1 &&
+                board[(buffMove + buffSM) / 10][(buffMove + buffSM) % 10] == 0){
+            buffMove = buffMove + buffSM;
+            nextMoveKing(buffMove, true, targetBuff, true);
         }
         board[move / 10][move % 10] = actingFigure + 2;
         if (actingFigure == 1){
@@ -457,7 +439,6 @@ public class Checkers {
         else{
             actingFigure -= 1;
         }
-        
         arbitrator();
     }
 }
